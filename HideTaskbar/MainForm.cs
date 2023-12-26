@@ -27,18 +27,29 @@ namespace HideTaskbar
             // 虽然窗口大小已经设置为 0，但还是会有个灰窗口，需使用 Hide 方法隐藏
             Hide();
 
-            StringBuilder sb_msg = new StringBuilder();
-            sb_msg.AppendLine("此软件无窗口，已运行在任务栏托盘中，可右键托盘中的图标打开菜单。\n");
-            sb_msg.AppendLine("注意：请先详细阅读【关于】中的信息后再使用。");
-            SendNotification(Text, sb_msg.ToString());
-
             // 读取 ini 文件中的配置
-            string firstShowAbout = IniFileHelper.Select("FirstShowAbout");
-            string autoHideConfig = IniFileHelper.Select("AutoHide");
+            string closeNoticeConfig = IniFileHelper.Select("CloseNotice");
             string autoStartConfig = IniFileHelper.Select("AutoStart");
+            string autoHideConfig = IniFileHelper.Select("AutoHide");
+            string firstShowAbout = IniFileHelper.Select("FirstShowAbout");
 
-            // 第一次显示【关于】配置
-            if(!string.IsNullOrEmpty(firstShowAbout))
+            // 关闭通知配置
+            if (!string.IsNullOrEmpty(closeNoticeConfig))
+            {
+                EnableCloseNotice(Convert.ToBoolean(closeNoticeConfig), true);
+            }
+            // 开机自启动配置
+            if (!string.IsNullOrEmpty(autoStartConfig))
+            {
+                EnableAutoStart(Convert.ToBoolean(autoStartConfig), true);
+            }
+            // 启动后自动隐藏任务栏配置
+            if (!string.IsNullOrEmpty(autoHideConfig))
+            {
+                EnableAutoHide(Convert.ToBoolean(autoHideConfig), true);
+            }
+            // 第一次显示关于配置
+            if (!string.IsNullOrEmpty(firstShowAbout))
             {
                 bool isFirstShowAbout = Convert.ToBoolean(firstShowAbout);
                 if (isFirstShowAbout)
@@ -47,16 +58,11 @@ namespace HideTaskbar
                     IniFileHelper.Update("FirstShowAbout", "False");
                 }
             }
-            // 启动后自动隐藏任务栏配置
-            if (!string.IsNullOrEmpty(autoHideConfig))
-            {
-                EnableAutoHide(Convert.ToBoolean(autoHideConfig), true);
-            }
-            // 开机自启动配置
-            if (!string.IsNullOrEmpty(autoStartConfig))
-            {
-                EnableAutoStart(Convert.ToBoolean(autoStartConfig), true);
-            }
+
+            StringBuilder sb_msg = new StringBuilder();
+            sb_msg.AppendLine("此软件无窗口，已运行在任务栏托盘中，可右键托盘中的图标打开菜单。\n");
+            sb_msg.AppendLine("注意：请先详细阅读【关于】中的信息后再使用。");
+            SendNotification(Text, sb_msg.ToString());
         }
 
         // 窗口关闭事件
@@ -82,15 +88,19 @@ namespace HideTaskbar
         // 菜单【启动后自动隐藏任务栏】选项点击事件
         private void tsm_autoHide_Click(object sender, EventArgs e)
         {
-            tsm_autoHide.Checked = !tsm_autoHide.Checked;
-            EnableAutoHide(tsm_autoHide.Checked, false);
+            EnableAutoHide(!tsm_autoHide.Checked, false);
         }
 
         // 菜单【开机自启动】选项点击事件
         private void tsm_autoStart_Click(object sender, EventArgs e)
         {
-            tsm_autoStart.Checked = !tsm_autoStart.Checked;
-            EnableAutoStart(tsm_autoStart.Checked, false);
+            EnableAutoStart(!tsm_autoStart.Checked, false);
+        }
+
+        // 菜单【关闭通知】选项点击事件
+        private void tsm_closeNotice_Click(object sender, EventArgs e)
+        {
+            EnableCloseNotice(!tsm_closeNotice.Checked, false);
         }
 
         // 菜单【关于】选项点击事件
@@ -184,6 +194,24 @@ namespace HideTaskbar
                 IniFileHelper.Update("AutoStart", enable.ToString());
         }
 
+        // 设置是否关闭通知
+        private void EnableCloseNotice(bool enable, bool isInit)
+        {
+            tsm_closeNotice.Checked = enable;
+
+            if (enable)
+            {
+                tsm_closeNotice.Text = "开启通知";
+            }
+            else
+            {
+                tsm_closeNotice.Text = "关闭通知";
+            }
+
+            if (!isInit)
+                IniFileHelper.Update("CloseNotice", enable.ToString());
+        }
+
         // 显示关于
         private void ShowAbout()
         {
@@ -210,9 +238,12 @@ namespace HideTaskbar
         // 发送通知
         private void SendNotification(string title, string text)
         {
-            notifyIcon.BalloonTipTitle = title;
-            notifyIcon.BalloonTipText = text;
-            notifyIcon.ShowBalloonTip(2000);
+            if (!tsm_closeNotice.Checked)
+            {
+                notifyIcon.BalloonTipTitle = title;
+                notifyIcon.BalloonTipText = text;
+                notifyIcon.ShowBalloonTip(2000);
+            }
         }
     }
 }

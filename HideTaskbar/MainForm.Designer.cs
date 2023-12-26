@@ -32,13 +32,14 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             notifyIcon = new NotifyIcon(components);
+            timer = new System.Windows.Forms.Timer(components);
             contextMenuStrip = new ContextMenuStrip(components);
             tsm_hideOrShow = new ToolStripMenuItem();
+            tsm_autoHide = new ToolStripMenuItem();
             tsm_autoStart = new ToolStripMenuItem();
+            tsm_closeNotice = new ToolStripMenuItem();
             tsm_about = new ToolStripMenuItem();
             tsm_exit = new ToolStripMenuItem();
-            timer = new System.Windows.Forms.Timer(components);
-            tsm_autoHide = new ToolStripMenuItem();
             contextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -50,9 +51,15 @@
             notifyIcon.Visible = true;
             notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
             // 
+            // timer
+            // 
+            timer.Enabled = true;
+            timer.Interval = 300;
+            timer.Tick += timer_Tick;
+            // 
             // contextMenuStrip
             // 
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { tsm_hideOrShow, tsm_autoHide, tsm_autoStart, tsm_about, tsm_exit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { tsm_hideOrShow, tsm_autoHide, tsm_autoStart, tsm_closeNotice, tsm_about, tsm_exit });
             contextMenuStrip.Name = "contextMenuStrip";
             contextMenuStrip.Size = new Size(197, 114);
             // 
@@ -77,6 +84,13 @@
             tsm_autoStart.Text = "开机自启动";
             tsm_autoStart.Click += tsm_autoStart_Click;
             // 
+            // tsm_closeNotice
+            // 
+            tsm_closeNotice.Name = "tsm_closeNotice";
+            tsm_closeNotice.Size = new Size(196, 22);
+            tsm_closeNotice.Text = "关闭通知";
+            tsm_closeNotice.Click += tsm_closeNotice_Click;
+            // 
             // tsm_about
             // 
             tsm_about.Name = "tsm_about";
@@ -90,12 +104,6 @@
             tsm_exit.Size = new Size(196, 22);
             tsm_exit.Text = "退出";
             tsm_exit.Click += tsm_exit_Click;
-            // 
-            // timer
-            // 
-            timer.Enabled = true;
-            timer.Interval = 300;
-            timer.Tick += timer_Tick;
             // 
             // MainForm
             // 
@@ -115,12 +123,13 @@
         #endregion
 
         private NotifyIcon notifyIcon;
+        private System.Windows.Forms.Timer timer;
         private ContextMenuStrip contextMenuStrip;
         private ToolStripMenuItem tsm_hideOrShow;
+        private ToolStripMenuItem tsm_autoHide;
+        private ToolStripMenuItem tsm_autoStart;
+        private ToolStripMenuItem tsm_closeNotice;
         private ToolStripMenuItem tsm_about;
         private ToolStripMenuItem tsm_exit;
-        private System.Windows.Forms.Timer timer;
-        private ToolStripMenuItem tsm_autoStart;
-        private ToolStripMenuItem tsm_autoHide;
     }
 }
