@@ -6,18 +6,26 @@ namespace HideTaskbar
     public partial class MainForm : Form
     {
         // 全局快捷键对象
-        private readonly GlobalHotkeyHelper globalHotkeyHelper;
+        private readonly GlobalHotkeyHelper globalHotkeyTaskBar;
+        private readonly GlobalHotkeyHelper globalHotkeyTray;
 
         public MainForm()
         {
             InitializeComponent();
 
-            // 注册全局快捷键
-            globalHotkeyHelper = new GlobalHotkeyHelper(
+            // 注册全局快捷键（Ctrl + ~）隐藏/显示任务栏
+            globalHotkeyTaskBar = new GlobalHotkeyHelper(
                 GetHashCode(),
                 HideOrShowTaskbar,
                 GlobalHotkeyHelper.KeyModifiers.Ctrl,
                 Keys.Oemtilde
+            );
+            // 注册全局快捷键（Alt + 1）隐藏/显示托盘
+            globalHotkeyTray = new GlobalHotkeyHelper(
+                GetHashCode(),
+                HideOrShowTray,
+                GlobalHotkeyHelper.KeyModifiers.Alt,
+                Keys.D1
             );
         }
 
@@ -69,7 +77,8 @@ namespace HideTaskbar
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // 释放全局快捷键
-            globalHotkeyHelper.Dispose();
+            globalHotkeyTaskBar.Dispose();
+            globalHotkeyTray.Dispose();
         }
 
         // 托盘图标鼠标双击事件
@@ -83,6 +92,12 @@ namespace HideTaskbar
         private void tsm_hideOrShow_Click(object sender, EventArgs e)
         {
             HideOrShowTaskbar();
+        }
+
+        // 菜单【隐藏/显示系统托盘】选项点击事件
+        private void tsm_hideOrShowTray_Click(object sender, EventArgs e)
+        {
+            HideOrShowTray();
         }
 
         // 菜单【启动后自动隐藏任务栏】选项点击事件
@@ -143,6 +158,34 @@ namespace HideTaskbar
                 HideTaskbarHelper.ChangeAutoHideTaskbar(false);
                 tsm_hideOrShow.Text = "隐藏任务栏 (Ctrl + ~)";
                 SendNotification(Text, "已显示任务栏。");
+            }
+        }
+
+        // 隐藏/显示系统托盘
+        private void HideOrShowTray()
+        {
+            // 局部函数显示或隐藏系统托盘
+            void HideOrSHow(Boolean enable)
+            {
+                HideTaskbarHelper.ChangeTray(enable);
+                tsm_hideOrShowTray.Text = (enable ? "显示" : "隐藏") + "系统托盘 (Alt + 1)";
+                SendNotification(Text, "已" + (enable ? "隐藏" : "显示") + "系统托盘。");
+                tsm_hideOrShowTray.Checked = enable;
+            }
+            if (HideTaskbarHelper.GetTaryStatus())
+            {
+                if (!tsm_hideOrShowTray.Checked)
+                {
+                    HideOrSHow(true);
+                }
+                else
+                {
+                    HideOrSHow(false);
+                }
+            }
+            else
+            {
+                HideOrSHow(false);
             }
         }
 
@@ -228,7 +271,8 @@ namespace HideTaskbar
             sb_msg.AppendLine("    3.双击任务栏图标可以【隐藏/显示任务栏】。\n");
 
             sb_msg.AppendLine("【快捷键】：");
-            sb_msg.AppendLine("    1.隐藏/显示任务栏：【Ctrl + ~】\n");
+            sb_msg.AppendLine("    1.隐藏/显示任务栏：【Ctrl + ~】");
+            sb_msg.AppendLine("    2.隐藏/显示系统托盘：【Alt + 1】\n");
 
             sb_msg.AppendLine("【作者】：LonelyAtom");
 
