@@ -10,7 +10,7 @@ namespace HideTaskbar
         [STAThread]
         static void Main()
         {
-            // 获取当前进程的名称 
+            // 获取当前进程的名称
             string processName = Process.GetCurrentProcess().ProcessName;
             Process[] runningProcesses = Process.GetProcessesByName(processName);
 
