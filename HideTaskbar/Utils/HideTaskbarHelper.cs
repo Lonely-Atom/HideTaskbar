@@ -1,19 +1,18 @@
-﻿using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace HideTaskbar.Utils
 {
     public static class HideTaskbarHelper
     {
         #region 切换任务栏设置中的“在桌面模式下自动隐藏任务栏”选项 Windows API 函数
-        const uint ABM_SETSTATE = 0x0000000A;
-        const uint ABS_AUTOHIDE = 0x0000001;
+        private const uint ABM_SETSTATE = 0x0000000A;
+        private const uint ABS_AUTOHIDE = 0x0000001;
 
         [DllImport("shell32.dll", SetLastError = true)]
-        static extern IntPtr SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
+        private static extern IntPtr SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct APPBARDATA
+        private struct APPBARDATA
         {
             public uint cbSize;
             public IntPtr hWnd;
@@ -24,7 +23,7 @@ namespace HideTaskbar.Utils
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
+        private struct RECT
         {
             public int Left;
             public int Top;
@@ -46,7 +45,7 @@ namespace HideTaskbar.Utils
 
         #region 隐藏系统托盘 Windows API 函数
         [DllImport("user32.dll")]
-        public static extern bool IsWindowVisible(IntPtr hWnd);
+        private static extern bool IsWindowVisible(int hWnd);
         #endregion
 
         /// <summary>
@@ -87,11 +86,11 @@ namespace HideTaskbar.Utils
         }
 
         /// <summary>
-        /// 隐藏系统托盘
+        /// 获取系统托盘状态
         /// </summary>
         public static Boolean GetTaryStatus()
         {
-            IntPtr hwndPrimary = (IntPtr)FindWindow("NotifyIconOverflowWindow", "");
+            int hwndPrimary = FindWindow("NotifyIconOverflowWindow", "");
             return IsWindowVisible(hwndPrimary);
         }
 

@@ -164,29 +164,10 @@ namespace HideTaskbar
         // 隐藏/显示系统托盘
         private void HideOrShowTray()
         {
-            // 局部函数显示或隐藏系统托盘
-            void HideOrSHow(Boolean enable)
-            {
-                HideTaskbarHelper.ChangeTray(enable);
-                tsm_hideOrShowTray.Text = (enable ? "显示" : "隐藏") + "系统托盘 (Alt + 1)";
-                SendNotification(Text, "已" + (enable ? "隐藏" : "显示") + "系统托盘。");
-                tsm_hideOrShowTray.Checked = enable;
-            }
             if (HideTaskbarHelper.GetTaryStatus())
-            {
-                if (!tsm_hideOrShowTray.Checked)
-                {
-                    HideOrSHow(true);
-                }
-                else
-                {
-                    HideOrSHow(false);
-                }
-            }
+                HideTaskbarHelper.ChangeTray(true);
             else
-            {
-                HideOrSHow(false);
-            }
+                HideTaskbarHelper.ChangeTray(false);
         }
 
         // 设置是否启动后自动隐藏任务栏
@@ -274,7 +255,8 @@ namespace HideTaskbar
             sb_msg.AppendLine("    1.隐藏/显示任务栏：【Ctrl + ~】");
             sb_msg.AppendLine("    2.隐藏/显示系统托盘：【Alt + 1】\n");
 
-            sb_msg.AppendLine("【作者】：LonelyAtom");
+            sb_msg.AppendLine("【作者】：LonelyAtom\n");
+            sb_msg.AppendLine("【贡献者】：Wwwwtgd");
 
             MessageBox.Show(sb_msg.ToString(), "关于", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

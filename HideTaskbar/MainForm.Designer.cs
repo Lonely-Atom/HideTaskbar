@@ -35,7 +35,6 @@
             timer = new System.Windows.Forms.Timer(components);
             contextMenuStrip = new ContextMenuStrip(components);
             tsm_hideOrShow = new ToolStripMenuItem();
-            tsm_hideOrShowTray = new ToolStripMenuItem();
             tsm_autoHide = new ToolStripMenuItem();
             tsm_autoStart = new ToolStripMenuItem();
             tsm_closeNotice = new ToolStripMenuItem();
@@ -60,7 +59,7 @@
             // 
             // contextMenuStrip
             // 
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { tsm_hideOrShow, tsm_hideOrShowTray, tsm_autoHide, tsm_autoStart, tsm_closeNotice, tsm_about, tsm_exit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { tsm_hideOrShow, tsm_autoHide, tsm_autoStart, tsm_closeNotice, tsm_about, tsm_exit });
             contextMenuStrip.Name = "contextMenuStrip";
             contextMenuStrip.Size = new Size(197, 114);
             // 
@@ -70,13 +69,6 @@
             tsm_hideOrShow.Size = new Size(196, 22);
             tsm_hideOrShow.Text = "隐藏任务栏 (Ctrl + ~)";
             tsm_hideOrShow.Click += tsm_hideOrShow_Click;
-            // 
-            // tsm_hideOrShowTray
-            // 
-            tsm_hideOrShowTray.Name = "tsm_hideOrShowTray";
-            tsm_hideOrShowTray.Size = new Size(196, 22);
-            tsm_hideOrShowTray.Text = "隐藏系统托盘 (Alt + 1)";
-            tsm_hideOrShowTray.Click += tsm_hideOrShowTray_Click;
             // 
             // tsm_autoHide
             // 
@@ -134,7 +126,6 @@
         private System.Windows.Forms.Timer timer;
         private ContextMenuStrip contextMenuStrip;
         private ToolStripMenuItem tsm_hideOrShow;
-        private ToolStripMenuItem tsm_hideOrShowTray;
         private ToolStripMenuItem tsm_autoHide;
         private ToolStripMenuItem tsm_autoStart;
         private ToolStripMenuItem tsm_closeNotice;
