@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 
 namespace HideTaskbar.Utils
 {
@@ -43,6 +44,11 @@ namespace HideTaskbar.Utils
         private static extern int ShowWindow(int hwnd, int command);
         #endregion
 
+        #region 隐藏系统托盘 Windows API 函数
+        [DllImport("user32.dll")]
+        public static extern bool IsWindowVisible(IntPtr hWnd);
+        #endregion
+
         /// <summary>
         /// 切换任务栏设置中的“在桌面模式下自动隐藏任务栏”选项
         /// </summary>
@@ -78,6 +84,25 @@ namespace HideTaskbar.Utils
                     ShowWindow(hwndSecondary, status ? SW_HIDE : SW_SHOW);
                 }
             }
+        }
+
+        /// <summary>
+        /// 隐藏系统托盘
+        /// </summary>
+        public static Boolean GetTaryStatus()
+        {
+            IntPtr hwndPrimary = (IntPtr)FindWindow("NotifyIconOverflowWindow", "");
+            return IsWindowVisible(hwndPrimary);
+        }
+
+        /// <summary>
+        /// 隐藏系统托盘
+        /// </summary>
+        /// <param name="status">状态</param>
+        public static void ChangeTray(bool status)
+        {
+            int hwndPrimary = FindWindow("NotifyIconOverflowWindow", "");
+            ShowWindow(hwndPrimary, status ? SW_HIDE : SW_SHOW);
         }
     }
 }
