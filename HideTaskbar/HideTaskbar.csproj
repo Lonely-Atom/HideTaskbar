@@ -13,6 +13,11 @@
 
     <AssemblyTitle>隐藏工具栏小工具</AssemblyTitle>
     <AssemblyVersion>1.2.0</AssemblyVersion>
+    <StartupObject>HideTaskbar.Program</StartupObject>
+    <Authors>LonelyAtom</Authors>
+    <Title>$(AssemblyName)</Title>
+    <Copyright>$(Authors)</Copyright>
+    <DelaySign>False</DelaySign>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
