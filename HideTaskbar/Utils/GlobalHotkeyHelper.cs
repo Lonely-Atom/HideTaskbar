@@ -40,7 +40,10 @@ namespace HideTaskbar.Utils
             this.id = id;
             this.onHotkeyPressed = onHotkeyPressed;
             CreateHandle(new CreateParams());
-            RegisterHotKey(Handle, id, (int)modifiers, (int)key);
+            bool registerHotKeyResult = RegisterHotKey(Handle, id, (int)modifiers, (int)key);
+
+            if (!registerHotKeyResult)
+                throw new Exception($"【{modifiers} + {key}】热键注册失败!");
         }
 
         /// <summary>

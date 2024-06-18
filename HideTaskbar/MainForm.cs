@@ -13,20 +13,27 @@ namespace HideTaskbar
         {
             InitializeComponent();
 
-            // 注册全局快捷键（Ctrl + ~）隐藏/显示任务栏
-            globalHotkeyTaskBar = new GlobalHotkeyHelper(
-                GetHashCode(),
-                HideOrShowTaskbar,
-                GlobalHotkeyHelper.KeyModifiers.Ctrl,
-                Keys.Oemtilde
-            );
-            // 注册全局快捷键（Alt + 1）隐藏/显示托盘
-            globalHotkeyTray = new GlobalHotkeyHelper(
-                GetHashCode(),
-                HideOrShowTray,
-                GlobalHotkeyHelper.KeyModifiers.Alt,
-                Keys.D1
-            );
+            try
+            {
+                // 注册全局快捷键（Ctrl + ~）隐藏/显示任务栏
+                globalHotkeyTaskBar = new GlobalHotkeyHelper(
+                    GetHashCode(),
+                    HideOrShowTaskbar,
+                    GlobalHotkeyHelper.KeyModifiers.Ctrl,
+                    Keys.Oemtilde
+                );
+                // 注册全局快捷键（Alt + 1）隐藏/显示托盘
+                globalHotkeyTray = new GlobalHotkeyHelper(
+                    GetHashCode(),
+                    HideOrShowTray,
+                    GlobalHotkeyHelper.KeyModifiers.Ctrl,
+                    Keys.Oemtilde
+                );
+            }
+            catch (Exception ex)
+            {
+                SendNotification(Text, ex.Message);
+            }
         }
 
         // 窗口加载事件

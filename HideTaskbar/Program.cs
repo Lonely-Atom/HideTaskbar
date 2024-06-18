@@ -1,21 +1,18 @@
-using System.Diagnostics;
-
 namespace HideTaskbar
 {
     internal static class Program
     {
+        // 定义互斥对象
+        static readonly Mutex mutex = new(true, "BBFAB829-3487-44AD-B80C-C28F10E4B39F");
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            // 获取当前进程的名称
-            string processName = Process.GetCurrentProcess().ProcessName;
-            Process[] runningProcesses = Process.GetProcessesByName(processName);
-
-            // 如果已经存在相同的进程，则显示信息并退出
-            if (runningProcesses.Length > 1)
+            // 检查是否已经有一个实例在运行
+            if (!mutex.WaitOne(TimeSpan.Zero))
             {
                 MessageBox.Show("应用程序已经在运行中。", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -25,6 +22,9 @@ namespace HideTaskbar
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new MainForm());
+
+            // 释放互斥对象
+            mutex.ReleaseMutex();
         }
     }
 }
