@@ -18,7 +18,7 @@ namespace HideTaskbar.Utils
             Alt = 1,
             Ctrl = 2,
             Shift = 4,
-            WindowsKey = 8
+            Win = 8
         }
 
         [DllImport("user32.dll")]
@@ -29,21 +29,86 @@ namespace HideTaskbar.Utils
         #endregion
 
         /// <summary>
-        /// 注册全局快捷键
+        /// 创建快捷键帮助类对象
         /// </summary>
         /// <param name="id">快捷键 id</param>
         /// <param name="onHotkeyPressed">回调方法</param>
-        /// <param name="modifiers">修饰键</param>
-        /// <param name="key">按键</param>
-        public GlobalHotkeyHelper(int id, Action onHotkeyPressed, KeyModifiers modifiers, Keys key)
+        public GlobalHotkeyHelper(int id, Action onHotkeyPressed)
         {
             this.id = id;
             this.onHotkeyPressed = onHotkeyPressed;
             CreateHandle(new CreateParams());
-            bool registerHotKeyResult = RegisterHotKey(Handle, id, (int)modifiers, (int)key);
+        }
 
-            if (!registerHotKeyResult)
-                throw new Exception($"【{modifiers} + {key}】热键注册失败!");
+        /// <summary>
+        /// 注册全局快捷键
+        /// </summary>
+        /// <param name="hotkeyString">快捷键字符串</param>
+        /// <returns>是否注册成功</returns>
+        public bool RegisterHotKey(string hotkeyString)
+        {
+            if (TryParseHotKey(hotkeyString, out KeyModifiers modifiers, out Keys key))
+                return RegisterHotKey(Handle, id, (int)modifiers, (int)key);
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// 尝试解析快捷键字符串为 KeyModifiers 和 Keys 返回
+        /// </summary>
+        /// <param name="hotkeyString">快捷键字符串</param>
+        /// <param name="modifiers">功能键</param>
+        /// <param name="key">按键</param>
+        /// <returns>是否成功解析</returns>
+        static bool TryParseHotKey(string hotkeyString, out KeyModifiers modifiers, out Keys key)
+        {
+            modifiers = KeyModifiers.None;
+            key = Keys.None;
+
+            if (string.IsNullOrWhiteSpace(hotkeyString))
+                return false;
+
+            string[] parts = hotkeyString.Split('+', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(p => p.Trim())
+                                .ToArray();
+
+            foreach (string part in parts)
+                switch (part.ToLower())
+                {
+                    case "ctrl":
+                    case "control":
+                        modifiers |= KeyModifiers.Ctrl;
+                        break;
+                    case "alt":
+                        modifiers |= KeyModifiers.Alt;
+                        break;
+                    case "shift":
+                        modifiers |= KeyModifiers.Shift;
+                        break;
+                    case "win":
+                    case "windows":
+                        modifiers |= KeyModifiers.Win;
+                        break;
+                    default:
+                        if (part.Length == 1)
+                        {
+                            // 处理单个字符
+                            char k = part[0];
+                            if (char.IsLetterOrDigit(k))
+                                key = (Keys)char.ToUpper(k);
+                            else if (k == '~')
+                                key = Keys.Oemtilde;
+                            else
+                                return false;
+                        }
+                        else
+                            // 尝试解析为 Keys 枚举
+                            if (!Enum.TryParse(part, true, out key))
+                            return false;
+                        break;
+                }
+
+            return modifiers != KeyModifiers.None && key != Keys.None;
         }
 
         /// <summary>
@@ -58,7 +123,6 @@ namespace HideTaskbar.Utils
         /// <summary>
         /// 重写窗口过程函数，捕获到快捷键则触发回调方法
         /// </summary>
-        /// <param name="m"></param>
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);

@@ -29,7 +29,7 @@
 
             List<string> lines = new(File.ReadAllLines(startPath + _FILE_PATH));
 
-            for(int i = 0; i < lines.Count; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
                 string line = lines[i].Replace(" ", string.Empty);
 

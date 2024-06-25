@@ -21,8 +21,14 @@ namespace HideTaskbar
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            // 监听 Application.ApplicationExit 事件
+            Application.ApplicationExit += new EventHandler(OnApplicationExit);
             Application.Run(new MainForm());
+        }
 
+        // 程序退出回调方法
+        private static void OnApplicationExit(object? sender, EventArgs e)
+        {
             // 释放互斥对象
             mutex.ReleaseMutex();
         }
