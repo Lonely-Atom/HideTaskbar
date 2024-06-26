@@ -13,57 +13,40 @@ namespace HideTaskbar
         {
             InitializeComponent();
 
-            #region 初始读取 ini 配置文件并设置
+            #region 初始读取配置文件并进行相关设置
             // 关闭通知配置
-            string closeNoticeConfig = IniFileHelper.Select("CloseNotice");
-            if (!string.IsNullOrEmpty(closeNoticeConfig))
-                EnableCloseNotice(Convert.ToBoolean(closeNoticeConfig), true);
-
+            EnableCloseNotice(ConfigHelper.Instance.AppConfig.Configs.CloseNotice, true);
             // 开机自启动配置
-            string autoStartConfig = IniFileHelper.Select("AutoStart");
-            if (!string.IsNullOrEmpty(autoStartConfig))
-                EnableAutoStart(Convert.ToBoolean(autoStartConfig), true);
-
+            EnableAutoStart(ConfigHelper.Instance.AppConfig.Configs.AutoStart, true);
             // 启动后自动隐藏任务栏配置
-            string autoHideConfig = IniFileHelper.Select("AutoHide");
-            if (!string.IsNullOrEmpty(autoHideConfig))
-                EnableAutoHide(Convert.ToBoolean(autoHideConfig), true);
-
+            EnableAutoHide(ConfigHelper.Instance.AppConfig.Configs.AutoHide, true);
             // 第一次显示关于配置
-            string firstShowAboutConfig = IniFileHelper.Select("FirstShowAbout");
-            if (!string.IsNullOrEmpty(firstShowAboutConfig))
+            if (ConfigHelper.Instance.AppConfig.Configs.FirstShowAbout)
             {
-                bool isFirstShowAbout = Convert.ToBoolean(firstShowAboutConfig);
-                if (isFirstShowAbout)
-                {
-                    ShowAbout();
-                    IniFileHelper.Update("FirstShowAbout", "False");
-                }
+                ShowAbout();
+                ConfigHelper.Instance.AppConfig.Configs.FirstShowAbout = false;
+                ConfigHelper.Instance.UpdateConfig();
             }
             #endregion
 
-            #region 注册全局快捷键（默认：Ctrl + ~）隐藏/显示任务栏
-            string hotkeyTaskBarConfig = IniFileHelper.Select("HotkeyTaskBar");
-
+            #region 注册全局快捷键：隐藏/显示任务栏
             globalHotkeyTaskBar = new GlobalHotkeyHelper(
                 GetHashCode(),
                 HideOrShowTaskbar
             );
 
-            if(!globalHotkeyTaskBar.RegisterHotKey(hotkeyTaskBarConfig))
-                SendNotification(Text, $"【{hotkeyTaskBarConfig}】热键注册失败!");
+            if(!globalHotkeyTaskBar.RegisterHotKey(ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar))
+                SendNotification(Text, $"【{ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar}】热键注册失败!");
             #endregion
 
-            #region 注册全局快捷键（默认：Alt + 1）隐藏/显示托盘
-            string hotkeyTrayConfig = IniFileHelper.Select("HotkeyTray");
-
+            #region 注册全局快捷键：隐藏/显示托盘
             globalHotkeyTray = new GlobalHotkeyHelper(
                 GetHashCode(),
                 HideOrShowTray
             );
 
-            if (!globalHotkeyTray.RegisterHotKey(hotkeyTrayConfig))
-                SendNotification(Text, $"【{hotkeyTrayConfig}】热键注册失败!");
+            if (!globalHotkeyTray.RegisterHotKey(ConfigHelper.Instance.AppConfig.Hotkeys.Tray))
+                SendNotification(Text, $"【{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}】热键注册失败!");
             #endregion
 
             #region 运行程序提示
@@ -71,6 +54,10 @@ namespace HideTaskbar
             sb_msg.AppendLine("此软件无窗口，已运行在任务栏托盘中，可右键托盘中的图标打开菜单。\n");
             sb_msg.AppendLine("注意：请先详细阅读【关于】中的信息后再使用。");
             SendNotification(Text, sb_msg.ToString());
+            #endregion
+
+            #region 初始化隐藏/显示任务栏菜单项文本，防止在 Designer 中引用变量导致报错
+            tsm_hideOrShowTaskbar.Text = $"隐藏任务栏 ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
             #endregion
         }
 
@@ -141,7 +128,7 @@ namespace HideTaskbar
         // 计时器触发事件
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (tsm_hideOrShow.Checked)
+            if (tsm_hideOrShowTaskbar.Checked)
                 // 完全隐藏任务栏
                 HideTaskbarHelper.ChangeTaskbar(true);
         }
@@ -149,13 +136,13 @@ namespace HideTaskbar
         // 隐藏/显示任务栏
         private void HideOrShowTaskbar()
         {
-            tsm_hideOrShow.Checked = !tsm_hideOrShow.Checked;
+            tsm_hideOrShowTaskbar.Checked = !tsm_hideOrShowTaskbar.Checked;
 
-            if (tsm_hideOrShow.Checked)
+            if (tsm_hideOrShowTaskbar.Checked)
             {
                 // 打开任务栏设置中的“在桌面模式下自动隐藏任务栏”选项
                 HideTaskbarHelper.ChangeAutoHideTaskbar(true);
-                tsm_hideOrShow.Text = "显示任务栏 (Ctrl + ~)";
+                tsm_hideOrShowTaskbar.Text = $"显示任务栏 ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
                 //SendNotification(Text, "已隐藏任务栏。");
             }
             else
@@ -164,7 +151,7 @@ namespace HideTaskbar
                 HideTaskbarHelper.ChangeTaskbar(false);
                 // 关闭任务栏设置中的“在桌面模式下自动隐藏任务栏”选项
                 HideTaskbarHelper.ChangeAutoHideTaskbar(false);
-                tsm_hideOrShow.Text = "隐藏任务栏 (Ctrl + ~)";
+                tsm_hideOrShowTaskbar.Text = $"隐藏任务栏 ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
                 //SendNotification(Text, "已显示任务栏。");
             }
         }
@@ -199,7 +186,10 @@ namespace HideTaskbar
             }
 
             if (!isInit)
-                IniFileHelper.Update("AutoHide", enable.ToString());
+            {
+                ConfigHelper.Instance.AppConfig.Configs.AutoHide = enable;
+                ConfigHelper.Instance.UpdateConfig();
+            }
         }
 
         // 设置是否开机自启动
@@ -223,7 +213,10 @@ namespace HideTaskbar
             }
 
             if (!isInit)
-                IniFileHelper.Update("AutoStart", enable.ToString());
+            {
+                ConfigHelper.Instance.AppConfig.Configs.AutoStart = enable;
+                ConfigHelper.Instance.UpdateConfig();
+            }
         }
 
         // 设置是否关闭通知
@@ -241,7 +234,10 @@ namespace HideTaskbar
             }
 
             if (!isInit)
-                IniFileHelper.Update("CloseNotice", enable.ToString());
+            {
+                ConfigHelper.Instance.AppConfig.Configs.CloseNotice = enable;
+                ConfigHelper.Instance.UpdateConfig();
+            }
         }
 
         // 显示关于
@@ -257,12 +253,11 @@ namespace HideTaskbar
             sb_msg.AppendLine("【重要说明】：");
             sb_msg.AppendLine("    1. 此软件无窗口，运行后将自动收到任务栏托盘中。");
             sb_msg.AppendLine("    2. 隐藏任务栏后托盘也会被隐藏，所以请熟记以下快捷键，防止隐藏后无法恢复。");
-            sb_msg.AppendLine("    3. 双击任务栏图标可以【隐藏/显示任务栏】。");
-            sb_msg.AppendLine("    4. 在任务栏隐藏时，可使用快捷键将系统托盘呼出（目前已知 Win11 无效）。\n");
+            sb_msg.AppendLine("    3. 双击任务栏图标可以【隐藏/显示任务栏】。\n");
 
-            sb_msg.AppendLine("【快捷键】（可在 Settings.ini 文件中修改）：");
-            sb_msg.AppendLine("    1.隐藏/显示任务栏：【Ctrl + ~】");
-            sb_msg.AppendLine("    2.隐藏/显示系统托盘：【Alt + 1】\n");
+            sb_msg.AppendLine("【快捷键】（可在 appsettings.json 文件中修改）：");
+            sb_msg.AppendLine($"    1.隐藏/显示任务栏：【{ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar}】");
+            sb_msg.AppendLine($"    2.隐藏/显示系统托盘：【{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}】（目前已知 Win11 无效）\n");
 
             sb_msg.AppendLine("【作者】：LonelyAtom\n");
             sb_msg.AppendLine("【贡献者】：Wwwwtgd");
