@@ -1,4 +1,6 @@
-﻿namespace HideTaskbar
+﻿using HideTaskbar.Utils;
+
+namespace HideTaskbar
 {
     partial class MainForm
     {
@@ -34,7 +36,7 @@
             notifyIcon = new NotifyIcon(components);
             timer = new System.Windows.Forms.Timer(components);
             contextMenuStrip = new ContextMenuStrip(components);
-            tsm_hideOrShow = new ToolStripMenuItem();
+            tsm_hideOrShowTaskbar = new ToolStripMenuItem();
             tsm_autoHide = new ToolStripMenuItem();
             tsm_autoStart = new ToolStripMenuItem();
             tsm_closeNotice = new ToolStripMenuItem();
@@ -49,61 +51,61 @@
             notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
             notifyIcon.Text = "隐藏任务栏小工具";
             notifyIcon.Visible = true;
-            notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
+            notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick;
             // 
             // timer
             // 
             timer.Enabled = true;
             timer.Interval = 300;
-            timer.Tick += timer_Tick;
+            timer.Tick += Timer_Tick;
             // 
             // contextMenuStrip
             // 
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { tsm_hideOrShow, tsm_autoHide, tsm_autoStart, tsm_closeNotice, tsm_about, tsm_exit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { tsm_hideOrShowTaskbar, tsm_autoHide, tsm_autoStart, tsm_closeNotice, tsm_about, tsm_exit });
             contextMenuStrip.Name = "contextMenuStrip";
             contextMenuStrip.Size = new Size(197, 114);
             // 
-            // tsm_hideOrShow
+            // tsm_hideOrShowTaskbar
             // 
-            tsm_hideOrShow.Name = "tsm_hideOrShow";
-            tsm_hideOrShow.Size = new Size(196, 22);
-            tsm_hideOrShow.Text = "隐藏任务栏 (Ctrl + ~)";
-            tsm_hideOrShow.Click += tsm_hideOrShow_Click;
+            tsm_hideOrShowTaskbar.Name = "tsm_hideOrShowTaskbar";
+            tsm_hideOrShowTaskbar.Size = new Size(196, 22);
+            tsm_hideOrShowTaskbar.Text = "隐藏任务栏";
+            tsm_hideOrShowTaskbar.Click += Tsm_hideOrShow_Click;
             // 
             // tsm_autoHide
             // 
             tsm_autoHide.Name = "tsm_autoHide";
             tsm_autoHide.Size = new Size(196, 22);
             tsm_autoHide.Text = "启动后自动隐藏任务栏";
-            tsm_autoHide.Click += tsm_autoHide_Click;
+            tsm_autoHide.Click += Tsm_autoHide_Click;
             // 
             // tsm_autoStart
             // 
             tsm_autoStart.Name = "tsm_autoStart";
             tsm_autoStart.Size = new Size(196, 22);
             tsm_autoStart.Text = "开机自启动";
-            tsm_autoStart.Click += tsm_autoStart_Click;
+            tsm_autoStart.Click += Tsm_autoStart_Click;
             // 
             // tsm_closeNotice
             // 
             tsm_closeNotice.Name = "tsm_closeNotice";
             tsm_closeNotice.Size = new Size(196, 22);
             tsm_closeNotice.Text = "关闭通知";
-            tsm_closeNotice.Click += tsm_closeNotice_Click;
+            tsm_closeNotice.Click += Tsm_closeNotice_Click;
             // 
             // tsm_about
             // 
             tsm_about.Name = "tsm_about";
             tsm_about.Size = new Size(196, 22);
             tsm_about.Text = "关于";
-            tsm_about.Click += tsm_about_Click;
+            tsm_about.Click += Tsm_about_Click;
             // 
             // tsm_exit
             // 
             tsm_exit.Name = "tsm_exit";
             tsm_exit.Size = new Size(196, 22);
             tsm_exit.Text = "退出";
-            tsm_exit.Click += tsm_exit_Click;
+            tsm_exit.Click += Tsm_exit_Click;
             // 
             // MainForm
             // 
@@ -125,7 +127,7 @@
         private NotifyIcon notifyIcon;
         private System.Windows.Forms.Timer timer;
         private ContextMenuStrip contextMenuStrip;
-        private ToolStripMenuItem tsm_hideOrShow;
+        private ToolStripMenuItem tsm_hideOrShowTaskbar;
         private ToolStripMenuItem tsm_autoHide;
         private ToolStripMenuItem tsm_autoStart;
         private ToolStripMenuItem tsm_closeNotice;

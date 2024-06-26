@@ -32,18 +32,18 @@ namespace HideTaskbar.Utils
         }
         #endregion
 
-        #region 完全隐藏任务栏 Windows API 函数
+        #region 查找和显示/隐藏 Windows 窗口的 Windows API 函数
         private const int SW_HIDE = 0;
         private const int SW_SHOW = 1;
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int FindWindow(string className, string windowText);
 
         [DllImport("user32.dll")]
         private static extern int ShowWindow(int hwnd, int command);
         #endregion
 
-        #region 隐藏系统托盘 Windows API 函数
+        #region 判断窗口是否为可见状态的 Windows API 函数
         [DllImport("user32.dll")]
         private static extern bool IsWindowVisible(int hWnd);
         #endregion
@@ -54,7 +54,7 @@ namespace HideTaskbar.Utils
         /// <param name="status">状态</param>
         public static void ChangeAutoHideTaskbar(bool status)
         {
-            APPBARDATA appBarData = new APPBARDATA
+            APPBARDATA appBarData = new()
             {
                 cbSize = (uint)Marshal.SizeOf(typeof(APPBARDATA)),
                 hWnd = IntPtr.Zero,
@@ -66,7 +66,7 @@ namespace HideTaskbar.Utils
         }
 
         /// <summary>
-        /// 完全隐藏任务栏
+        /// 显示/隐藏任务栏
         /// </summary>
         /// <param name="status">状态</param>
         public static void ChangeTaskbar(bool status)
@@ -95,7 +95,7 @@ namespace HideTaskbar.Utils
         }
 
         /// <summary>
-        /// 隐藏系统托盘
+        /// 显示/隐藏系统托盘（已使用 WinSpy++ 查看，目前无法操作 Win11 的系统托盘）
         /// </summary>
         /// <param name="status">状态</param>
         public static void ChangeTray(bool status)
