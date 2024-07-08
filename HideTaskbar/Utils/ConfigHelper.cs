@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Xml;
 
 namespace HideTaskbar.Utils
 {
@@ -43,6 +42,6 @@ namespace HideTaskbar.Utils
     public class HotkeysModel
     {
         public string TaskBar { get; set; } = "Ctrl+Shift+~";
-        public string Tray { get; set; } = "Ctrl+Shift+1";
+        public string Tray { get; set; } = "Ctrl+Alt+~";
     }
 }
