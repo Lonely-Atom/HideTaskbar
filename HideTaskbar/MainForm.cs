@@ -136,6 +136,10 @@ namespace HideTaskbar
         // 隐藏/显示任务栏
         private void HideOrShowTaskbar()
         {
+            // 在隐藏/显示任务栏时若系统托盘为打开状态，则将其隐藏（防止在打开系统托盘的情况下隐藏任务栏会导致在隐藏任务栏状态下显示系统托盘会同时使任务栏显示的问题）
+            if (HideTaskbarHelper.GetTaryStatus())
+                HideTaskbarHelper.ChangeTray();
+
             tsm_hideOrShowTaskbar.Checked = !tsm_hideOrShowTaskbar.Checked;
 
             if (tsm_hideOrShowTaskbar.Checked)
@@ -159,10 +163,12 @@ namespace HideTaskbar
         // 隐藏/显示系统托盘
         private void HideOrShowTray()
         {
-            if (HideTaskbarHelper.GetTaryStatus())
-                HideTaskbarHelper.ChangeTray(true);
-            else
-                HideTaskbarHelper.ChangeTray(false);
+            //if (HideTaskbarHelper.GetTaryStatus())
+            //    HideTaskbarHelper.ChangeTray(true);
+            //else
+            //    HideTaskbarHelper.ChangeTray(false);
+
+            HideTaskbarHelper.ChangeTray();
         }
 
         // 设置是否启动后自动隐藏任务栏
