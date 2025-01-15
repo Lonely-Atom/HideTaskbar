@@ -23,3 +23,7 @@ LonelyAtom
 ## 【贡献者】
 
 Wwwwtgd
+
+## 【Star History】
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Lonely-Atom/HideTaskbar&type=Date)](https://star-history.com/#Lonely-Atom/HideTaskbar&Date)
