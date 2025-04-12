@@ -1,11 +1,11 @@
-using HideTaskbar.Utils;
+ï»¿using HideTaskbar.Utils;
 using System.Text;
 
 namespace HideTaskbar
 {
     public partial class MainForm : Form
     {
-        // È«¾Ö¿ì½İ¼ü¶ÔÏó
+        // å…¨å±€å¿«æ·é”®å¯¹è±¡
         private readonly GlobalHotkeyHelper? globalHotkeyTaskBar;
         private readonly GlobalHotkeyHelper? globalHotkeyTray;
 
@@ -13,14 +13,14 @@ namespace HideTaskbar
         {
             InitializeComponent();
 
-            #region ³õÊ¼¶ÁÈ¡ÅäÖÃÎÄ¼ş²¢½øĞĞÏà¹ØÉèÖÃ
-            // ¹Ø±ÕÍ¨ÖªÅäÖÃ
+            #region åˆå§‹è¯»å–é…ç½®æ–‡ä»¶å¹¶è¿›è¡Œç›¸å…³è®¾ç½®
+            // å…³é—­é€šçŸ¥é…ç½®
             EnableCloseNotice(ConfigHelper.Instance.AppConfig.Configs.CloseNotice, true);
-            // ¿ª»ú×ÔÆô¶¯ÅäÖÃ
+            // å¼€æœºè‡ªå¯åŠ¨é…ç½®
             EnableAutoStart(ConfigHelper.Instance.AppConfig.Configs.AutoStart, true);
-            // Æô¶¯ºó×Ô¶¯Òş²ØÈÎÎñÀ¸ÅäÖÃ
+            // å¯åŠ¨åè‡ªåŠ¨éšè—ä»»åŠ¡æ é…ç½®
             EnableAutoHide(ConfigHelper.Instance.AppConfig.Configs.AutoHide, true);
-            // µÚÒ»´ÎÏÔÊ¾¹ØÓÚÅäÖÃ
+            // ç¬¬ä¸€æ¬¡æ˜¾ç¤ºå…³äºé…ç½®
             if (ConfigHelper.Instance.AppConfig.Configs.FirstShowAbout)
             {
                 ShowAbout();
@@ -29,114 +29,114 @@ namespace HideTaskbar
             }
             #endregion
 
-            #region ×¢²áÈ«¾Ö¿ì½İ¼ü£ºÒş²Ø/ÏÔÊ¾ÈÎÎñÀ¸
+            #region æ³¨å†Œå…¨å±€å¿«æ·é”®ï¼šéšè—/æ˜¾ç¤ºä»»åŠ¡æ 
             globalHotkeyTaskBar = new GlobalHotkeyHelper(
                 GetHashCode(),
                 HideOrShowTaskbar
             );
 
             if(!globalHotkeyTaskBar.RegisterHotKey(ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar))
-                SendNotification(Text, $"¡¾{ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar}¡¿ÈÈ¼ü×¢²áÊ§°Ü!");
+                SendNotification(Text, $"ã€{ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar}ã€‘çƒ­é”®æ³¨å†Œå¤±è´¥!");
             #endregion
 
-            #region ×¢²áÈ«¾Ö¿ì½İ¼ü£ºÒş²Ø/ÏÔÊ¾ÍĞÅÌ
+            #region æ³¨å†Œå…¨å±€å¿«æ·é”®ï¼šéšè—/æ˜¾ç¤ºæ‰˜ç›˜
             globalHotkeyTray = new GlobalHotkeyHelper(
                 GetHashCode(),
                 HideOrShowTray
             );
 
             if (!globalHotkeyTray.RegisterHotKey(ConfigHelper.Instance.AppConfig.Hotkeys.Tray))
-                SendNotification(Text, $"¡¾{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}¡¿ÈÈ¼ü×¢²áÊ§°Ü!");
+                SendNotification(Text, $"ã€{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}ã€‘çƒ­é”®æ³¨å†Œå¤±è´¥!");
             #endregion
 
-            #region ÔËĞĞ³ÌĞòÌáÊ¾
+            #region è¿è¡Œç¨‹åºæç¤º
             StringBuilder sb_msg = new();
-            sb_msg.AppendLine("´ËÈí¼şÎŞ´°¿Ú£¬ÒÑÔËĞĞÔÚÈÎÎñÀ¸ÍĞÅÌÖĞ£¬¿ÉÓÒ¼üÍĞÅÌÖĞµÄÍ¼±ê´ò¿ª²Ëµ¥¡£\n");
-            sb_msg.AppendLine("×¢Òâ£ºÇëÏÈÏêÏ¸ÔÄ¶Á¡¾¹ØÓÚ¡¿ÖĞµÄĞÅÏ¢ºóÔÙÊ¹ÓÃ¡£");
+            sb_msg.AppendLine("æ­¤è½¯ä»¶æ— çª—å£ï¼Œå·²è¿è¡Œåœ¨ä»»åŠ¡æ æ‰˜ç›˜ä¸­ï¼Œå¯å³é”®æ‰˜ç›˜ä¸­çš„å›¾æ ‡æ‰“å¼€èœå•ã€‚\n");
+            sb_msg.AppendLine("æ³¨æ„ï¼šè¯·å…ˆè¯¦ç»†é˜…è¯»ã€å…³äºã€‘ä¸­çš„ä¿¡æ¯åå†ä½¿ç”¨ã€‚");
             SendNotification(Text, sb_msg.ToString());
             #endregion
 
-            #region ³õÊ¼»¯Òş²Ø/ÏÔÊ¾ÈÎÎñÀ¸²Ëµ¥ÏîÎÄ±¾£¬·ÀÖ¹ÔÚ Designer ÖĞÒıÓÃ±äÁ¿µ¼ÖÂ±¨´í
-            tsm_hideOrShowTaskbar.Text = $"Òş²ØÈÎÎñÀ¸ ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
+            #region åˆå§‹åŒ–éšè—/æ˜¾ç¤ºä»»åŠ¡æ èœå•é¡¹æ–‡æœ¬ï¼Œé˜²æ­¢åœ¨ Designer ä¸­å¼•ç”¨å˜é‡å¯¼è‡´æŠ¥é”™
+            tsm_hideOrShowTaskbar.Text = $"éšè—ä»»åŠ¡æ  ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
             #endregion
         }
 
-        // ´°¿Ú¼ÓÔØÊÂ¼ş
+        // çª—å£åŠ è½½äº‹ä»¶
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // ËäÈ»´°¿Ú´óĞ¡ÒÑ¾­ÉèÖÃÎª 0£¬µ«»¹ÊÇ»áÓĞ¸ö»Ò´°¿Ú£¬ĞèÊ¹ÓÃ Hide ·½·¨Òş²Ø
+            // è™½ç„¶çª—å£å¤§å°å·²ç»è®¾ç½®ä¸º 0ï¼Œä½†è¿˜æ˜¯ä¼šæœ‰ä¸ªç°çª—å£ï¼Œéœ€ä½¿ç”¨ Hide æ–¹æ³•éšè—
             Hide();
         }
 
-        // ´°¿Ú¹Ø±ÕÊÂ¼ş
+        // çª—å£å…³é—­äº‹ä»¶
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // ÊÍ·ÅÈ«¾Ö¿ì½İ¼ü
+            // é‡Šæ”¾å…¨å±€å¿«æ·é”®
             globalHotkeyTaskBar?.Dispose();
             globalHotkeyTray?.Dispose();
         }
 
-        // ÍĞÅÌÍ¼±êÊó±êË«»÷ÊÂ¼ş
+        // æ‰˜ç›˜å›¾æ ‡é¼ æ ‡åŒå‡»äº‹ä»¶
         private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
                 HideOrShowTaskbar();
         }
 
-        // ²Ëµ¥¡¾Òş²Ø/ÏÔÊ¾ÈÎÎñÀ¸¡¿Ñ¡Ïîµã»÷ÊÂ¼ş
+        // èœå•ã€éšè—/æ˜¾ç¤ºä»»åŠ¡æ ã€‘é€‰é¡¹ç‚¹å‡»äº‹ä»¶
         private void Tsm_hideOrShow_Click(object sender, EventArgs e)
         {
             HideOrShowTaskbar();
         }
 
-        // ²Ëµ¥¡¾Òş²Ø/ÏÔÊ¾ÏµÍ³ÍĞÅÌ¡¿Ñ¡Ïîµã»÷ÊÂ¼ş
-        private void Tsm_hideOrShowTray_Click(object sender, EventArgs e)
-        {
-            HideOrShowTray();
-        }
+        //// èœå•ã€éšè—/æ˜¾ç¤ºç³»ç»Ÿæ‰˜ç›˜ã€‘é€‰é¡¹ç‚¹å‡»äº‹ä»¶
+        //private void Tsm_hideOrShowTray_Click(object sender, EventArgs e)
+        //{
+        //    HideOrShowTray();
+        //}
 
-        // ²Ëµ¥¡¾Æô¶¯ºó×Ô¶¯Òş²ØÈÎÎñÀ¸¡¿Ñ¡Ïîµã»÷ÊÂ¼ş
+        // èœå•ã€å¯åŠ¨åè‡ªåŠ¨éšè—ä»»åŠ¡æ ã€‘é€‰é¡¹ç‚¹å‡»äº‹ä»¶
         private void Tsm_autoHide_Click(object sender, EventArgs e)
         {
             EnableAutoHide(!tsm_autoHide.Checked, false);
         }
 
-        // ²Ëµ¥¡¾¿ª»ú×ÔÆô¶¯¡¿Ñ¡Ïîµã»÷ÊÂ¼ş
+        // èœå•ã€å¼€æœºè‡ªå¯åŠ¨ã€‘é€‰é¡¹ç‚¹å‡»äº‹ä»¶
         private void Tsm_autoStart_Click(object sender, EventArgs e)
         {
             EnableAutoStart(!tsm_autoStart.Checked, false);
         }
 
-        // ²Ëµ¥¡¾¹Ø±ÕÍ¨Öª¡¿Ñ¡Ïîµã»÷ÊÂ¼ş
+        // èœå•ã€å…³é—­é€šçŸ¥ã€‘é€‰é¡¹ç‚¹å‡»äº‹ä»¶
         private void Tsm_closeNotice_Click(object sender, EventArgs e)
         {
             EnableCloseNotice(!tsm_closeNotice.Checked, false);
         }
 
-        // ²Ëµ¥¡¾¹ØÓÚ¡¿Ñ¡Ïîµã»÷ÊÂ¼ş
+        // èœå•ã€å…³äºã€‘é€‰é¡¹ç‚¹å‡»äº‹ä»¶
         private void Tsm_about_Click(object sender, EventArgs e)
         {
             ShowAbout();
         }
 
-        // ²Ëµ¥¡¾ÍË³ö¡¿Ñ¡Ïîµã»÷ÊÂ¼ş
+        // èœå•ã€é€€å‡ºã€‘é€‰é¡¹ç‚¹å‡»äº‹ä»¶
         private void Tsm_exit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        // ¼ÆÊ±Æ÷´¥·¢ÊÂ¼ş
+        // è®¡æ—¶å™¨è§¦å‘äº‹ä»¶
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (tsm_hideOrShowTaskbar.Checked)
-                // ÍêÈ«Òş²ØÈÎÎñÀ¸
+                // å®Œå…¨éšè—ä»»åŠ¡æ 
                 HideTaskbarHelper.ChangeTaskbar(true);
         }
 
-        // Òş²Ø/ÏÔÊ¾ÈÎÎñÀ¸
+        // éšè—/æ˜¾ç¤ºä»»åŠ¡æ 
         private void HideOrShowTaskbar()
         {
-            // ÔÚÒş²Ø/ÏÔÊ¾ÈÎÎñÀ¸Ê±ÈôÏµÍ³ÍĞÅÌÎª´ò¿ª×´Ì¬£¬Ôò½«ÆäÒş²Ø£¨·ÀÖ¹ÔÚ´ò¿ªÏµÍ³ÍĞÅÌµÄÇé¿öÏÂÒş²ØÈÎÎñÀ¸»áµ¼ÖÂÔÚÒş²ØÈÎÎñÀ¸×´Ì¬ÏÂÏÔÊ¾ÏµÍ³ÍĞÅÌ»áÍ¬Ê±Ê¹ÈÎÎñÀ¸ÏÔÊ¾µÄÎÊÌâ£©
+            // åœ¨éšè—/æ˜¾ç¤ºä»»åŠ¡æ æ—¶è‹¥ç³»ç»Ÿæ‰˜ç›˜ä¸ºæ‰“å¼€çŠ¶æ€ï¼Œåˆ™å°†å…¶éšè—ï¼ˆé˜²æ­¢åœ¨æ‰“å¼€ç³»ç»Ÿæ‰˜ç›˜çš„æƒ…å†µä¸‹éšè—ä»»åŠ¡æ ä¼šå¯¼è‡´åœ¨éšè—ä»»åŠ¡æ çŠ¶æ€ä¸‹æ˜¾ç¤ºç³»ç»Ÿæ‰˜ç›˜ä¼šåŒæ—¶ä½¿ä»»åŠ¡æ æ˜¾ç¤ºçš„é—®é¢˜ï¼‰
             if (HideTaskbarHelper.GetTaryStatus())
                 HideTaskbarHelper.ChangeTray();
 
@@ -144,23 +144,23 @@ namespace HideTaskbar
 
             if (tsm_hideOrShowTaskbar.Checked)
             {
-                // ´ò¿ªÈÎÎñÀ¸ÉèÖÃÖĞµÄ¡°ÔÚ×ÀÃæÄ£Ê½ÏÂ×Ô¶¯Òş²ØÈÎÎñÀ¸¡±Ñ¡Ïî
+                // æ‰“å¼€ä»»åŠ¡æ è®¾ç½®ä¸­çš„â€œåœ¨æ¡Œé¢æ¨¡å¼ä¸‹è‡ªåŠ¨éšè—ä»»åŠ¡æ â€é€‰é¡¹
                 HideTaskbarHelper.ChangeAutoHideTaskbar(true);
-                tsm_hideOrShowTaskbar.Text = $"ÏÔÊ¾ÈÎÎñÀ¸ ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
-                //SendNotification(Text, "ÒÑÒş²ØÈÎÎñÀ¸¡£");
+                tsm_hideOrShowTaskbar.Text = $"æ˜¾ç¤ºä»»åŠ¡æ  ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
+                //SendNotification(Text, "å·²éšè—ä»»åŠ¡æ ã€‚");
             }
             else
             {
-                // ÏÔÊ¾ÈÎÎñÀ¸
+                // æ˜¾ç¤ºä»»åŠ¡æ 
                 HideTaskbarHelper.ChangeTaskbar(false);
-                // ¹Ø±ÕÈÎÎñÀ¸ÉèÖÃÖĞµÄ¡°ÔÚ×ÀÃæÄ£Ê½ÏÂ×Ô¶¯Òş²ØÈÎÎñÀ¸¡±Ñ¡Ïî
+                // å…³é—­ä»»åŠ¡æ è®¾ç½®ä¸­çš„â€œåœ¨æ¡Œé¢æ¨¡å¼ä¸‹è‡ªåŠ¨éšè—ä»»åŠ¡æ â€é€‰é¡¹
                 HideTaskbarHelper.ChangeAutoHideTaskbar(false);
-                tsm_hideOrShowTaskbar.Text = $"Òş²ØÈÎÎñÀ¸ ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
-                //SendNotification(Text, "ÒÑÏÔÊ¾ÈÎÎñÀ¸¡£");
+                tsm_hideOrShowTaskbar.Text = $"éšè—ä»»åŠ¡æ  ({ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar})";
+                //SendNotification(Text, "å·²æ˜¾ç¤ºä»»åŠ¡æ ã€‚");
             }
         }
 
-        // Òş²Ø/ÏÔÊ¾ÏµÍ³ÍĞÅÌ
+        // éšè—/æ˜¾ç¤ºç³»ç»Ÿæ‰˜ç›˜
         private void HideOrShowTray()
         {
             //if (HideTaskbarHelper.GetTaryStatus())
@@ -171,24 +171,24 @@ namespace HideTaskbar
             HideTaskbarHelper.ChangeTray();
         }
 
-        // ÉèÖÃÊÇ·ñÆô¶¯ºó×Ô¶¯Òş²ØÈÎÎñÀ¸
+        // è®¾ç½®æ˜¯å¦å¯åŠ¨åè‡ªåŠ¨éšè—ä»»åŠ¡æ 
         private void EnableAutoHide(bool enable, bool isInit)
         {
             tsm_autoHide.Checked = enable;
 
             if (enable)
             {
-                tsm_autoHide.Text = "È¡ÏûÆô¶¯ºó×Ô¶¯Òş²ØÈÎÎñÀ¸";
+                tsm_autoHide.Text = "å–æ¶ˆå¯åŠ¨åè‡ªåŠ¨éšè—ä»»åŠ¡æ ";
                 if (!isInit)
-                    SendNotification(Text, "ÒÑÉèÖÃÆô¶¯ºó×Ô¶¯Òş²ØÈÎÎñÀ¸£¡");
+                    SendNotification(Text, "å·²è®¾ç½®å¯åŠ¨åè‡ªåŠ¨éšè—ä»»åŠ¡æ ï¼");
                 else
                     HideOrShowTaskbar();
             }
             else
             {
-                tsm_autoHide.Text = "Æô¶¯ºó×Ô¶¯Òş²ØÈÎÎñÀ¸";
+                tsm_autoHide.Text = "å¯åŠ¨åè‡ªåŠ¨éšè—ä»»åŠ¡æ ";
                 if (!isInit)
-                    SendNotification(Text, "ÒÑÈ¡ÏûÆô¶¯ºó×Ô¶¯Òş²ØÈÎÎñÀ¸£¡");
+                    SendNotification(Text, "å·²å–æ¶ˆå¯åŠ¨åè‡ªåŠ¨éšè—ä»»åŠ¡æ ï¼");
             }
 
             if (!isInit)
@@ -198,7 +198,7 @@ namespace HideTaskbar
             }
         }
 
-        // ÉèÖÃÊÇ·ñ¿ª»ú×ÔÆô¶¯
+        // è®¾ç½®æ˜¯å¦å¼€æœºè‡ªå¯åŠ¨
         private void EnableAutoStart(bool enable, bool isInit)
         {
             tsm_autoStart.Checked = enable;
@@ -206,16 +206,16 @@ namespace HideTaskbar
             if (enable)
             {
                 AutoStartHelper.SetStartup(Text);
-                tsm_autoStart.Text = "È¡Ïû¿ª»ú×ÔÆô¶¯";
+                tsm_autoStart.Text = "å–æ¶ˆå¼€æœºè‡ªå¯åŠ¨";
                 if (!isInit)
-                    SendNotification(Text, "ÒÑÉèÖÃ¿ª»ú×ÔÆô¶¯£¡");
+                    SendNotification(Text, "å·²è®¾ç½®å¼€æœºè‡ªå¯åŠ¨ï¼");
             }
             else
             {
                 AutoStartHelper.UnsetStartup(Text);
-                tsm_autoStart.Text = "¿ª»ú×ÔÆô¶¯";
+                tsm_autoStart.Text = "å¼€æœºè‡ªå¯åŠ¨";
                 if (!isInit)
-                    SendNotification(Text, "ÒÑÈ¡Ïû¿ª»ú×ÔÆô¶¯£¡");
+                    SendNotification(Text, "å·²å–æ¶ˆå¼€æœºè‡ªå¯åŠ¨ï¼");
             }
 
             if (!isInit)
@@ -225,18 +225,18 @@ namespace HideTaskbar
             }
         }
 
-        // ÉèÖÃÊÇ·ñ¹Ø±ÕÍ¨Öª
+        // è®¾ç½®æ˜¯å¦å…³é—­é€šçŸ¥
         private void EnableCloseNotice(bool enable, bool isInit)
         {
             tsm_closeNotice.Checked = enable;
 
             if (enable)
             {
-                tsm_closeNotice.Text = "¿ªÆôÍ¨Öª";
+                tsm_closeNotice.Text = "å¼€å¯é€šçŸ¥";
             }
             else
             {
-                tsm_closeNotice.Text = "¹Ø±ÕÍ¨Öª";
+                tsm_closeNotice.Text = "å…³é—­é€šçŸ¥";
             }
 
             if (!isInit)
@@ -246,32 +246,32 @@ namespace HideTaskbar
             }
         }
 
-        // ÏÔÊ¾¹ØÓÚ
+        // æ˜¾ç¤ºå…³äº
         private static void ShowAbout()
         {
             StringBuilder sb_msg = new();
-            sb_msg.AppendLine("¡¾Èí¼şÃû¡¿£ºÒş²ØÈÎÎñÀ¸Ğ¡¹¤¾ß\n");
+            sb_msg.AppendLine("ã€è½¯ä»¶åã€‘ï¼šéšè—ä»»åŠ¡æ å°å·¥å…·\n");
 
-            sb_msg.AppendLine("¡¾ÖØÒªÌáĞÑ¡¿£º");
-            sb_msg.AppendLine("    1. ±¾Èí¼şÎªÃâ·ÑÌá¹©£¬×÷ÕßÎª¡¸LonelyAtom¡¹¡£ÈÎºÎË÷Òª¸¶·Ñ¹ºÂò´ËÈí¼şµÄĞĞÎª¾ùÎªÆÛÕ©¡£ÇëÎğÏòÈÎºÎµÚÈı·½Ö§¸¶·ÑÓÃ£¬ÒÔÃâÊÜµ½ÆÛÆ­¡£");
-            sb_msg.AppendLine("    2. ±¾Èí¼şÊÜµ½°æÈ¨±£»¤£¬²¢ÇÒ½öÏŞÓÚºÏ·¨»ñµÃĞí¿ÉµÄÓÃ»§Ê¹ÓÃ¡£Î´¾­ÊÚÈ¨µÄ¸´ÖÆ¡¢·Ö·¢»òµÁ°æĞĞÎª½«ÒÀ·¨×·¾¿Æä·¨ÂÉÔğÈÎ¡£\n");
+            sb_msg.AppendLine("ã€é‡è¦æé†’ã€‘ï¼š");
+            sb_msg.AppendLine("    1. æœ¬è½¯ä»¶ä¸ºå…è´¹æä¾›ï¼Œä½œè€…ä¸ºã€ŒLonelyAtomã€ã€‚ä»»ä½•ç´¢è¦ä»˜è´¹è´­ä¹°æ­¤è½¯ä»¶çš„è¡Œä¸ºå‡ä¸ºæ¬ºè¯ˆã€‚è¯·å‹¿å‘ä»»ä½•ç¬¬ä¸‰æ–¹æ”¯ä»˜è´¹ç”¨ï¼Œä»¥å…å—åˆ°æ¬ºéª—ã€‚");
+            sb_msg.AppendLine("    2. æœ¬è½¯ä»¶å—åˆ°ç‰ˆæƒä¿æŠ¤ï¼Œå¹¶ä¸”ä»…é™äºåˆæ³•è·å¾—è®¸å¯çš„ç”¨æˆ·ä½¿ç”¨ã€‚æœªç»æˆæƒçš„å¤åˆ¶ã€åˆ†å‘æˆ–ç›—ç‰ˆè¡Œä¸ºå°†ä¾æ³•è¿½ç©¶å…¶æ³•å¾‹è´£ä»»ã€‚\n");
 
-            sb_msg.AppendLine("¡¾ÖØÒªËµÃ÷¡¿£º");
-            sb_msg.AppendLine("    1. ´ËÈí¼şÎŞ´°¿Ú£¬ÔËĞĞºó½«×Ô¶¯ÊÕµ½ÈÎÎñÀ¸ÍĞÅÌÖĞ¡£");
-            sb_msg.AppendLine("    2. Òş²ØÈÎÎñÀ¸ºóÍĞÅÌÒ²»á±»Òş²Ø£¬ËùÒÔÇëÊì¼ÇÒÔÏÂ¿ì½İ¼ü£¬·ÀÖ¹Òş²ØºóÎŞ·¨»Ö¸´¡£");
-            sb_msg.AppendLine("    3. Ë«»÷ÈÎÎñÀ¸Í¼±ê¿ÉÒÔ¡¾Òş²Ø/ÏÔÊ¾ÈÎÎñÀ¸¡¿¡£\n");
+            sb_msg.AppendLine("ã€é‡è¦è¯´æ˜ã€‘ï¼š");
+            sb_msg.AppendLine("    1. æ­¤è½¯ä»¶æ— çª—å£ï¼Œè¿è¡Œåå°†è‡ªåŠ¨æ”¶åˆ°ä»»åŠ¡æ æ‰˜ç›˜ä¸­ã€‚");
+            sb_msg.AppendLine("    2. éšè—ä»»åŠ¡æ åæ‰˜ç›˜ä¹Ÿä¼šè¢«éšè—ï¼Œæ‰€ä»¥è¯·ç†Ÿè®°ä»¥ä¸‹å¿«æ·é”®ï¼Œé˜²æ­¢éšè—åæ— æ³•æ¢å¤ã€‚");
+            sb_msg.AppendLine("    3. åŒå‡»ä»»åŠ¡æ å›¾æ ‡å¯ä»¥ã€éšè—/æ˜¾ç¤ºä»»åŠ¡æ ã€‘ã€‚\n");
 
-            sb_msg.AppendLine("¡¾¿ì½İ¼ü¡¿£¨¿ÉÔÚ appsettings.json ÎÄ¼şÖĞĞŞ¸Ä£©£º");
-            sb_msg.AppendLine($"    1.Òş²Ø/ÏÔÊ¾ÈÎÎñÀ¸£º¡¾{ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar}¡¿");
-            sb_msg.AppendLine($"    2.Òş²Ø/ÏÔÊ¾ÏµÍ³ÍĞÅÌ£º¡¾{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}¡¿£¨Ä¿Ç°ÒÑÖª Win11 ÎŞĞ§£©\n");
+            sb_msg.AppendLine("ã€å¿«æ·é”®ã€‘ï¼ˆå¯åœ¨ appsettings.json æ–‡ä»¶ä¸­ä¿®æ”¹ï¼‰ï¼š");
+            sb_msg.AppendLine($"    1.éšè—/æ˜¾ç¤ºä»»åŠ¡æ ï¼šã€{ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar}ã€‘");
+            sb_msg.AppendLine($"    2.éšè—/æ˜¾ç¤ºç³»ç»Ÿæ‰˜ç›˜ï¼šã€{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}ã€‘ï¼ˆç›®å‰å·²çŸ¥ Win11 æ— æ•ˆï¼‰\n");
 
-            sb_msg.AppendLine("¡¾×÷Õß¡¿£ºLonelyAtom\n");
-            sb_msg.AppendLine("¡¾¹±Ï×Õß¡¿£ºWwwwtgd");
+            sb_msg.AppendLine("ã€ä½œè€…ã€‘ï¼šLonelyAtom\n");
+            sb_msg.AppendLine("ã€è´¡çŒ®è€…ã€‘ï¼šWwwwtgd");
 
-            MessageBox.Show(sb_msg.ToString(), "¹ØÓÚ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(sb_msg.ToString(), "å…³äº", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // ·¢ËÍÍ¨Öª
+        // å‘é€é€šçŸ¥
         private void SendNotification(string title, string text)
         {
             if (!tsm_closeNotice.Checked)
