@@ -263,7 +263,7 @@ namespace HideTaskbar
 
             sb_msg.AppendLine("【快捷键】（可在 appsettings.json 文件中修改）：");
             sb_msg.AppendLine($"    1.隐藏/显示任务栏：【{ConfigHelper.Instance.AppConfig.Hotkeys.TaskBar}】");
-            sb_msg.AppendLine($"    2.隐藏/显示系统托盘：【{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}】（目前已知 Win11 无效）\n");
+            sb_msg.AppendLine($"    2.隐藏/显示系统托盘：【{ConfigHelper.Instance.AppConfig.Hotkeys.Tray}】\n");
 
             sb_msg.AppendLine("【作者】：LonelyAtom\n");
             sb_msg.AppendLine("【贡献者】：Wwwwtgd");
