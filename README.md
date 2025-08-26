@@ -1,4 +1,4 @@
-# 隐藏任务栏小工具 (HideTaskbar)
+﻿# 隐藏任务栏小工具 (HideTaskbar)
 
 ## 【重要提醒】
 
@@ -15,14 +15,16 @@
 
 1. 隐藏/显示任务栏：`Ctrl + Shift + ~`
 2. 隐藏/显示系统托盘：`Ctrl + Alt + ~`
+3. 隐藏/显示桌面图标：`Ctrl + Shift + 1`
+4. 隐藏/显示桌面：`Ctrl + Alt + 1`
 
 ## 【作者】
 
-LonelyAtom
+[LonelyAtom](https://github.com/Lonely-Atom)
 
 ## 【贡献者】
 
-Wwwwtgd
+[Wwwwtgd](https://github.com/Wwwwtgd)
 
 ## 【Star History】
 

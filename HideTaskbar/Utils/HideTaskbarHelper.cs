@@ -1,6 +1,7 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows.Automation;
-using System.Windows.Input;
+﻿using Microsoft.Win32;
+
+using System.Runtime.InteropServices;
+
 using WindowsInput;
 using WindowsInput.Events;
 
@@ -8,6 +9,8 @@ namespace HideTaskbar.Utils
 {
     public static class HideTaskbarHelper
     {
+        #region Windows API
+
         #region 切换任务栏设置中的“在桌面模式下自动隐藏任务栏”选项 Windows API 函数
         private const uint ABM_SETSTATE = 0x0000000A;
         private const uint ABS_AUTOHIDE = 0x0000001;
@@ -53,8 +56,7 @@ namespace HideTaskbar.Utils
         #endregion
 
         #region 非阻塞向指定窗口的消息队列中投递一条消息
-        // 鼠标点击
-        private const int BM_CLICK = 0x00F5;
+        private const uint BM_CLICK = 0x00F5;
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern bool PostMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
@@ -106,6 +108,9 @@ namespace HideTaskbar.Utils
         private static extern uint AllowSetForegroundWindow(uint dwProcessId);
         #endregion
 
+        #endregion
+
+        #region 切换任务栏设置中的“在桌面模式下自动隐藏任务栏”选项
         /// <summary>
         /// 切换任务栏设置中的“在桌面模式下自动隐藏任务栏”选项
         /// </summary>
@@ -122,12 +127,14 @@ namespace HideTaskbar.Utils
 
             SHAppBarMessage(ABM_SETSTATE, ref appBarData);
         }
+        #endregion
 
+        #region 显示/隐藏任务栏
         /// <summary>
         /// 显示/隐藏任务栏
         /// </summary>
         /// <param name="status">状态</param>
-        public static void ChangeTaskbar(bool status)
+        public static void ChangeHideTaskbar(bool status)
         {
             IntPtr hwndPrimary = FindWindow("Shell_TrayWnd", "");
             ShowWindow(hwndPrimary, status ? SW_HIDE : SW_SHOWNORMAL);
@@ -142,29 +149,9 @@ namespace HideTaskbar.Utils
                 }
             }
         }
+        #endregion
 
-        /// <summary>
-        /// 获取系统托盘状态
-        /// </summary>
-        public static bool GetTaryStatus()
-        {
-            // 获取系统版本
-            string windowsVersion = GetWindowsVersion();
-
-            // Windows 11 系统
-            if (windowsVersion == "Windows 11")
-            {
-                IntPtr hwndPrimary = FindWindow("TopLevelWindowForOverflowXamlIsland", "系统托盘溢出窗口。");
-                return IsWindowVisible(hwndPrimary);
-            }
-            // 非 Windows 11系统
-            else
-            {
-                IntPtr hwndPrimary = FindWindow("NotifyIconOverflowWindow", "");
-                return IsWindowVisible(hwndPrimary);
-            }
-        }
-
+        #region 显示/隐藏系统托盘
         /// <summary>
         /// 显示/隐藏系统托盘
         /// </summary>
@@ -214,7 +201,7 @@ namespace HideTaskbar.Utils
 
                 if (GetTaryStatus())
                     await Simulate.Events()
-                        // 模拟按下 Win +B 快捷键
+                        // 模拟按下 Esc 键
                         .ClickChord(KeyCode.Escape)
                         .Invoke();
                 else
@@ -237,7 +224,7 @@ namespace HideTaskbar.Utils
                 if (buttonHandle != IntPtr.Zero)
                 {
                     // 在此显示任务栏的目的是为了防止无任务栏的情况下通过模拟点击系统托盘按钮打开系统托盘，系统托盘会显示在屏幕的左上角
-                    ChangeTaskbar(false);
+                    ChangeHideTaskbar(false);
                     // 向按钮发送点击消息
                     PostMessage(buttonHandle, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
                     // 显示系统托盘后给予其焦点，解决无法通过点击其他位置来隐藏系统托盘的问题
@@ -246,7 +233,72 @@ namespace HideTaskbar.Utils
                 }
             }
         }
+        #endregion
 
+        #region 显示/隐藏桌面图标
+        /// <summary>
+        /// 显示/隐藏桌面图标
+        /// </summary>
+        public static void ChangeDesktopIcon()
+        {
+            const string regPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
+
+            // 获取 Progman 窗口
+            IntPtr progman = FindWindow("Progman", "Program Manager");
+            // 在 Progman 下找出 SHELLDLL_DefView
+            IntPtr desktopWnd = FindWindowEx(progman, IntPtr.Zero, "SHELLDLL_DefView", null);
+            // 在 SHELLDLL_DefView 下找 ListView 控件
+            IntPtr listView = FindWindowEx(desktopWnd, IntPtr.Zero, "SysListView32", "FolderView");
+
+            bool visible = IsWindowVisible(listView);
+
+            ShowWindow(listView, visible ? SW_HIDE : SW_SHOWNORMAL);
+
+            // 更新注册表
+            using var key = Registry.CurrentUser.OpenSubKey(regPath, true);
+            key?.SetValue("HideIcons", visible ? 1 : 0, RegistryValueKind.DWord);
+        }
+        #endregion
+
+        #region 显示/隐藏桌面（黑屏）
+        /// <summary>
+        /// 显示/隐藏桌面（黑屏）
+        /// </summary>
+        public static void ChangeDesktop()
+        {
+
+            IntPtr progman = FindWindow("Progman", "Program Manager");
+            bool visible = IsWindowVisible(progman);
+
+            ShowWindow(progman, visible ? SW_HIDE : SW_SHOWNORMAL);
+        }
+        #endregion
+
+        #region 获取系统托盘状态
+        /// <summary>
+        /// 获取系统托盘状态
+        /// </summary>
+        public static bool GetTaryStatus()
+        {
+            // 获取系统版本
+            string windowsVersion = GetWindowsVersion();
+
+            // Windows 11 系统
+            if (windowsVersion == "Windows 11")
+            {
+                IntPtr hwndPrimary = FindWindow("TopLevelWindowForOverflowXamlIsland", "系统托盘溢出窗口。");
+                return IsWindowVisible(hwndPrimary);
+            }
+            // 非 Windows 11系统
+            else
+            {
+                IntPtr hwndPrimary = FindWindow("NotifyIconOverflowWindow", "");
+                return IsWindowVisible(hwndPrimary);
+            }
+        }
+        #endregion
+
+        #region 将指定窗口句柄设为焦点
         /// <summary>
         /// 将指定窗口句柄设为焦点
         /// </summary>
@@ -260,7 +312,9 @@ namespace HideTaskbar.Utils
             // 将目标窗口设置为前台并赋予焦点
             SetForegroundWindow(handle);
         }
+        #endregion
 
+        #region 获取 Windows 版本
         /// <summary>
         /// 获取 Windows 版本
         /// </summary>
@@ -276,5 +330,6 @@ namespace HideTaskbar.Utils
             else
                 return "Other";
         }
+        #endregion
     }
 }

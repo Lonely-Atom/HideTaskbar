@@ -2,6 +2,9 @@
 
 namespace HideTaskbar.Utils
 {
+    /// <summary>
+    /// 全局快捷键帮助类
+    /// </summary>
     public class GlobalHotkeyHelper : NativeWindow
     {
         // 快捷键 id
@@ -28,8 +31,9 @@ namespace HideTaskbar.Utils
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
         #endregion
 
+        #region 创建全局快捷键
         /// <summary>
-        /// 创建快捷键帮助类对象
+        /// 创建全局快捷键
         /// </summary>
         /// <param name="id">快捷键 id</param>
         /// <param name="onHotkeyPressed">回调方法</param>
@@ -39,7 +43,9 @@ namespace HideTaskbar.Utils
             this.onHotkeyPressed = onHotkeyPressed;
             CreateHandle(new CreateParams());
         }
+        #endregion
 
+        #region 注册全局快捷键
         /// <summary>
         /// 注册全局快捷键
         /// </summary>
@@ -52,7 +58,9 @@ namespace HideTaskbar.Utils
             else
                 return false;
         }
+        #endregion
 
+        #region 尝试解析快捷键字符串为 KeyModifiers 和 Keys 返回
         /// <summary>
         /// 尝试解析快捷键字符串为 KeyModifiers 和 Keys 返回
         /// </summary>
@@ -69,8 +77,8 @@ namespace HideTaskbar.Utils
                 return false;
 
             string[] parts = hotkeyString.Split('+', StringSplitOptions.RemoveEmptyEntries)
-                                .Select(p => p.Trim())
-                                .ToArray();
+                .Select(p => p.Trim())
+                .ToArray();
 
             foreach (string part in parts)
                 switch (part.ToLower())
@@ -80,6 +88,8 @@ namespace HideTaskbar.Utils
                         modifiers |= KeyModifiers.Ctrl;
                         break;
                     case "alt":
+                    case "alter":
+                    case "alternate":
                         modifiers |= KeyModifiers.Alt;
                         break;
                     case "shift":
@@ -110,7 +120,9 @@ namespace HideTaskbar.Utils
 
             return modifiers != KeyModifiers.None && key != Keys.None;
         }
+        #endregion
 
+        #region 释放全局快捷键
         /// <summary>
         /// 释放全局快捷键
         /// </summary>
@@ -119,7 +131,9 @@ namespace HideTaskbar.Utils
             UnregisterHotKey(Handle, id);
             DestroyHandle();
         }
+        #endregion
 
+        #region 重写窗口过程函数，捕获到快捷键则触发回调方法
         /// <summary>
         /// 重写窗口过程函数，捕获到快捷键则触发回调方法
         /// </summary>
@@ -131,5 +145,6 @@ namespace HideTaskbar.Utils
             if (m.Msg == WM_HOTKEY && m.WParam.ToInt32() == id)
                 onHotkeyPressed?.Invoke();
         }
+        #endregion
     }
 }

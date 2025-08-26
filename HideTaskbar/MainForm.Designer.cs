@@ -38,6 +38,8 @@ namespace HideTaskbar
             contextMenuStrip = new ContextMenuStrip(components);
             tsm_hideOrShowTaskbar = new ToolStripMenuItem();
             tsm_autoHide = new ToolStripMenuItem();
+            tsm_autoHideDesktopIcon = new ToolStripMenuItem();
+            tsm_autoHideDesktop = new ToolStripMenuItem();
             tsm_autoStart = new ToolStripMenuItem();
             tsm_closeNotice = new ToolStripMenuItem();
             tsm_about = new ToolStripMenuItem();
@@ -61,7 +63,16 @@ namespace HideTaskbar
             // 
             // contextMenuStrip
             // 
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { tsm_hideOrShowTaskbar, tsm_autoHide, tsm_autoStart, tsm_closeNotice, tsm_about, tsm_exit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] {
+                tsm_hideOrShowTaskbar,
+                tsm_autoHide,
+                tsm_autoHideDesktopIcon,
+                tsm_autoHideDesktop,
+                tsm_autoStart,
+                tsm_closeNotice,
+                tsm_about,
+                tsm_exit
+            });
             contextMenuStrip.Name = "contextMenuStrip";
             contextMenuStrip.Size = new Size(197, 114);
             // 
@@ -78,6 +89,20 @@ namespace HideTaskbar
             tsm_autoHide.Size = new Size(196, 22);
             tsm_autoHide.Text = "启动后自动隐藏任务栏";
             tsm_autoHide.Click += Tsm_autoHide_Click;
+            // 
+            // tsm_autoHideDesktopIcon
+            // 
+            tsm_autoHideDesktopIcon.Name = "tsm_autoHideDesktopIcon";
+            tsm_autoHideDesktopIcon.Size = new Size(196, 22);
+            tsm_autoHideDesktopIcon.Text = "启动后自动隐藏桌面图标";
+            tsm_autoHideDesktopIcon.Click += Tsm_autoHideDesktopIcon_Click;
+            // 
+            // tsm_autoHideDesktop
+            // 
+            tsm_autoHideDesktop.Name = "tsm_autoHideDesktop";
+            tsm_autoHideDesktop.Size = new Size(196, 22);
+            tsm_autoHideDesktop.Text = "启动后自动隐藏桌面";
+            tsm_autoHideDesktop.Click += Tsm_autoHideDesktop_Click;
             // 
             // tsm_autoStart
             // 
@@ -129,6 +154,8 @@ namespace HideTaskbar
         private ContextMenuStrip contextMenuStrip;
         private ToolStripMenuItem tsm_hideOrShowTaskbar;
         private ToolStripMenuItem tsm_autoHide;
+        private ToolStripMenuItem tsm_autoHideDesktopIcon;
+        private ToolStripMenuItem tsm_autoHideDesktop;
         private ToolStripMenuItem tsm_autoStart;
         private ToolStripMenuItem tsm_closeNotice;
         private ToolStripMenuItem tsm_about;
