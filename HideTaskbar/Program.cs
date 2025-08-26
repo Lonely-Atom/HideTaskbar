@@ -1,8 +1,8 @@
-namespace HideTaskbar
+ï»¿namespace HideTaskbar
 {
     internal static class Program
     {
-        // ¶¨Òå»¥³â¶ÔÏó
+        // å®šä¹‰äº’æ–¥å¯¹è±¡
         static readonly Mutex mutex = new(true, "BBFAB829-3487-44AD-B80C-C28F10E4B39F");
 
         /// <summary>
@@ -11,25 +11,28 @@ namespace HideTaskbar
         [STAThread]
         static void Main()
         {
-            // ¼ì²éÊÇ·ñÒÑ¾­ÓĞÒ»¸öÊµÀıÔÚÔËĞĞ
+            // æ£€æŸ¥æ˜¯å¦å·²ç»æœ‰ä¸€ä¸ªå®ä¾‹åœ¨è¿è¡Œ
             if (!mutex.WaitOne(TimeSpan.Zero))
             {
-                MessageBox.Show("Ó¦ÓÃ³ÌĞòÒÑ¾­ÔÚÔËĞĞÖĞ¡£", "¾¯¸æ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("åº”ç”¨ç¨‹åºå·²ç»åœ¨è¿è¡Œä¸­ã€‚", "è­¦å‘Š", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            // è®¾ç½®å·¥ä½œç›®å½•ä¸ºç¨‹åºæ‰€åœ¨ç›®å½•
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            // ¼àÌı Application.ApplicationExit ÊÂ¼ş
-            Application.ApplicationExit += new EventHandler(OnApplicationExit);
+            // ç›‘å¬ Application.ApplicationExit äº‹ä»¶
+            Application.ApplicationExit += OnApplicationExit;
             Application.Run(new MainForm());
         }
 
-        // ³ÌĞòÍË³ö»Øµ÷·½·¨
+        // ç¨‹åºé€€å‡ºå›è°ƒæ–¹æ³•
         private static void OnApplicationExit(object? sender, EventArgs e)
         {
-            // ÊÍ·Å»¥³â¶ÔÏó
+            // é‡Šæ”¾äº’æ–¥å¯¹è±¡
             mutex.ReleaseMutex();
         }
     }
